@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Mind Academy - Receipt Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .input-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .input-card h2 {
+            background: linear-gradient(135deg, #010101, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        .form-label {
+            color: #1e3c72;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border: none;
+            color: #1e3c72;
+            font-weight: bold;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .btn-capture {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .btn-capture:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(30, 60, 114, 0.6);
+        }
+
+        .receipt-container {
+            background: white;
+            border-radius: 20px;
+            padding: 0;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .receipt-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .receipt-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .academy-name {
+            color: #ffd700;
+            font-size: 2.8rem;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .academy-tagline {
+            color: white;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .best-badge {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1e3c72;
+            padding: 8px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .receipt-body {
+            padding: 40px;
+        }
+
+        .student-info {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 5px solid #ffd700;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .info-label {
+            color: #1e3c72;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #2a5298;
+            font-weight: bold;
+        }
+
+        .fee-details {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .fee-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            font-size: 1.2rem;
+        }
+
+        .fee-row:last-child {
+            border-bottom: none;
+            padding-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .fee-amount {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .remaining-amount {
+            font-size: 2rem;
+            color: #ffed4e;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-box {
+            background: linear-gradient(135deg, #fff9e6, #fffdf0);
+            border: 3px solid #ffd700;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .message-text {
+            color: #1e3c72;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .quote-box {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 3px solid #ffd700;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .quote-text {
+            font-style: italic;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .receipt-footer {
+            background: linear-gradient(135deg, #000000, #000000);
+            padding: 25px;
+            text-align: center;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .stars {
+            color: #ffd700;
+            font-size: 1.5rem;
+            margin-top: 10px;
+        }
+
+        #downloadMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3c72;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="input-card">
+            <h2><i class="fas fa-graduation-cap"></i> Receipt Generator</h2>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Student Name</label>
+                    <input type="text" class="form-control" id="studentName" placeholder="Enter student name">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Total Fees</label>
+                    <input type="number" class="form-control" id="totalFees" placeholder="Enter total fees">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Remaining Amount</label>
+                    <input type="number" class="form-control" id="remainingFees" placeholder="Enter remaining amount">
+                </div>
+            </div>
+            <button class="btn btn-generate" onclick="generateReceipt()">
+                <i class="fas fa-file-invoice"></i> Generate Receipt
+            </button>
+            <button class="btn btn-capture" onclick="captureReceipt()">
+                <i class="fas fa-download"></i> Download as Image
+            </button>
+        </div>
+
+        <div class="receipt-container" id="receiptPreview" style="display: none;">
+            <div class="receipt-header">
+                <div class="academy-name">
+                    <i class="fas fa-graduation-cap"></i> THE NEXT MIND ACADEMY
+                </div>
+                <div class="academy-tagline">Shaping Future Leaders</div>
+                <div class="best-badge">
+                    <i class="fas fa-trophy"></i> Best Academy in Uttam Nagar
+                </div>
+            </div>
+
+            <div class="receipt-body">
+                <div class="student-info">
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-user"></i> Student Name:</span>
+                        <span class="info-value" id="displayName">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-calendar"></i> Date:</span>
+                        <span class="info-value" id="displayDate">-</span>
+                    </div>
+                </div>
+
+                <div class="fee-details">
+                    <div class="fee-row">
+                        <span>Total Fees</span>
+                        <span class="fee-amount" id="displayTotal">Rs 0</span>
+                    </div>
+                    <div class="fee-row">
+                        <span>Amount Paid</span>
+                        <span class="fee-amount" id="displayPaid">Rs 0</span>
+                    </div>
+                    <div class="fee-row">
+                        <span>Remaining Balance</span>
+                        <span class="remaining-amount" id="displayRemaining">Rs 0</span>
+                    </div>
+                </div>
+
+                <div class="message-box">
+                    <p class="message-text" id="messageText">
+                        <strong>Dear Parent/Guardian,</strong><br>
+                        Thank you for trusting The Next Mind Academy.
+                    </p>
+                </div>
+
+                <div class="quote-box">
+                    <p class="quote-text" id="quoteText">
+                        Education is the most powerful weapon which you can use to change the world.
+                    </p>
+                </div>
+            </div>
+
+            <div class="receipt-footer">
+                <div>Uttam Nagar, Pune</div>
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <div style="margin-top: 10px; font-size: 0.9rem;">Building Bright Futures</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="downloadMessage">
+        <div class="spinner"></div>
+        <p style="color: #1e3c72; font-weight: bold; text-align: center;">Preparing receipt...</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        var quotes = [
+            "Education is the most powerful weapon which you can use to change the world. - Nelson Mandela",
+            "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
+            "Success is not the key to happiness. Happiness is the key to success. - Albert Schweitzer",
+            "Your child's potential is limitless. Every step counts towards greatness!",
+            "Invest in knowledge. It pays the best interest. - Benjamin Franklin"
+        ];
+
+        function generateReceipt() {
+            var studentName = document.getElementById('studentName').value;
+            var totalFees = parseFloat(document.getElementById('totalFees').value) || 0;
+            var remainingFees = parseFloat(document.getElementById('remainingFees').value) || 0;
+
+            if (!studentName) {
+                alert('Please enter student name!');
+                return;
+            }
+
+            if (totalFees <= 0) {
+                alert('Please enter valid total fees!');
+                return;
+            }
+
+            if (remainingFees < 0) {
+                alert('Remaining amount cannot be negative!');
+                return;
+            }
+
+            if (remainingFees > totalFees) {
+                alert('Remaining amount cannot be greater than total fees!');
+                return;
+            }
+
+            var paidFees = totalFees - remainingFees;
+            var today = new Date();
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            var dateString = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
+
+            document.getElementById('displayName').textContent = studentName;
+            document.getElementById('displayDate').textContent = dateString;
+            document.getElementById('displayTotal').textContent = 'Rs ' + totalFees.toFixed(2);
+            document.getElementById('displayPaid').textContent = 'Rs ' + paidFees.toFixed(2);
+            document.getElementById('displayRemaining').textContent = 'Rs ' + remainingFees.toFixed(2);
+
+            var message = '<strong>Dear Parent/Guardian,</strong><br><br>';
+            message += 'Thank you for trusting The Next Mind Academy with ' + studentName + '\'s education. ';
+            message += 'We are committed to excellence and nurturing every student\'s potential.<br><br>';
+
+            if (remainingFees > 0) {
+                message += '<strong>Payment Summary:</strong><br>';
+                message += 'You have paid Rs ' + paidFees.toFixed(2) + ' out of Rs ' + totalFees.toFixed(2) + '.<br><br>';
+                message += '<strong style="color: #d32f2f;">Kindly pay the remaining balance of Rs ' + remainingFees.toFixed(2) + ' at your earliest convenience.</strong><br>';
+                message += 'Your timely payment helps us continue providing quality education.';
+            } else if (remainingFees === 0) {
+                message += '<strong style="color: #2e7d32;">All fees cleared! Thank you for your complete payment of Rs ' + paidFees.toFixed(2) + '.</strong>';
+            }
+
+            document.getElementById('messageText').innerHTML = message;
+
+            var randomIndex = Math.floor(Math.random() * quotes.length);
+            document.getElementById('quoteText').textContent = quotes[randomIndex];
+
+            document.getElementById('receiptPreview').style.display = 'block';
+            document.getElementById('receiptPreview').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function captureReceipt() {
+            var receipt = document.getElementById('receiptPreview');
+            
+            if (receipt.style.display === 'none') {
+                alert('Please generate a receipt first!');
+                return;
+            }
+
+            var downloadMsg = document.getElementById('downloadMessage');
+            downloadMsg.style.display = 'block';
+
+            html2canvas(receipt, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true
+            }).then(function(canvas) {
+                canvas.toBlob(function(blob) {
+                    var url = URL.createObjectURL(blob);
+                    var link = document.createElement('a');
+                    var studentName = document.getElementById('studentName').value.replace(/\s+/g, '_');
+                    var timestamp = Date.now();
+                    link.download = 'NextMind_Receipt_' + studentName + '_' + timestamp + '.png';
+                    link.href = url;
+                    link.click();
+                    
+                    downloadMsg.style.display = 'none';
+                    
+                    setTimeout(function() {
+                        alert('Receipt downloaded successfully!');
+                    }, 300);
+                }, 'image/png');
+            });
+        }
+    </script>
+</body>
+</html>
